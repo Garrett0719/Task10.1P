@@ -10,7 +10,7 @@ const DecisionTask = (props) => {
         </div>
         <div className='Decision'>
         <h3>Please set up your task question and true or false</h3>
-            <InputExample id='decision' text='Please set up your task question' type='text' onChange={props.DecisionTask} name='TaskQuestion'/>
+            <InputExample inputid='decision' text='Please set up your task question' type='text' onChange={props.DecisionTask} name='TaskQuestion'/>
             <InputExample  type='radio' text2='Yes' name = 'Judgement' onChange={props.YesDecision} value='Yes'/>
             <InputExample  type='radio' text2='No' name = 'Judgement' onChange={props.NoDecision} value='No'/>
         </div>
