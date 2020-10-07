@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import Task from './component/Task';
+import NavBar from './component/NavBar';
 import DescriptionTask from './component/DescriptionTask';
 import SettingTask from './component/SettingTask';
 import WorkerRequirement from './component/WorkerRequirement';
@@ -7,12 +7,17 @@ import InputExample from './component/Input';
 import ChoiceTask from './component/ChoiceTask';
 import DecisionTask from './component/DecisionTask';
 import SentenceTask from './component/SentenceTask';
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 import './css/Home.css';
-import './css/Task.css';
+import './css/NavBar.css';
 
 
 
 function App() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+
   const [isValue,setValue] = useState('')
   const[contact,setInput] = useState({
     TaskType: '',
@@ -28,6 +33,7 @@ function App() {
     Reward:'',
     Numbers:''
   })
+
 
   const ChoiceChange = (e) =>{
     setValue('Choice')
@@ -87,6 +93,26 @@ function App() {
     })
   }
 
+  const ImageChange = () =>{
+    setValue('ImageTask')
+    setInput((PreValue)=>{
+      return{
+        TaskType: 'Image',
+        TaskTitle: PreValue.TaskTitle,
+        TaskDescription: PreValue.TaskDescription,
+        ExpiryDate:PreValue.ExpiryDate,
+        TaskQuestion: PreValue.TaskQuestion,
+        OptionOne:PreValue.OptionOne,
+        OptionTwo: PreValue.OptionTwo,
+        OptionThree:PreValue.OptionThree,
+        Judgement:PreValue.Judgement,
+        isRequire:PreValue.isRequire,
+        Reward:PreValue.Reward,
+        Numbers:PreValue.Numbers
+      }
+    })
+  }
+
   const InputChange = (e) =>{
     const name = e.target.name;
     const value = e.target.value;
@@ -124,6 +150,7 @@ function App() {
       }
     }
     else if(name === 'ExpiryDate'){
+      console.log(contact.ExpiryDate)
       return{
         TaskType: PreValue.TaskType,
         TaskTitle: PreValue.TaskTitle,
@@ -174,7 +201,7 @@ function App() {
     else if(name === 'OptionTwo'){
       return{
         TaskType: PreValue.TaskType,
-        TaskTitle: PreValue.TaskTitle,
+      TaskTitle: PreValue.TaskTitle,
       TaskDescription: PreValue.TaskDescription,
       ExpiryDate: PreValue.ExpiryDate,
       TaskQuestion: PreValue.TaskQuestion,
@@ -271,6 +298,7 @@ function App() {
   }
 
   const handleSubmit = () =>{
+    setShow(true)
     fetch('http://localhost:8000/register',{
       method :'post',
       headers :{'Content-Type':'application/json'},
@@ -297,49 +325,71 @@ function App() {
   }
 
   return(
+    <div>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/superhero/bootstrap.min.css" integrity="sha384-HnTY+mLT0stQlOwD3wcAzSVAZbrBp141qwfR4WfTqVQKSgmcgzk+oP0ieIyrxiFO" crossOrigin="anonymous"></link>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
     <div className ='home'>
-      <Task/>
-      <div className='Select'>
-      <span> 
-            <InputExample classname='type' id='Choice' type='radio' name='TaskType' onChange={ChoiceChange} value={isValue} text2='Choice Task'/>
-            <InputExample classname='type' id='Decision' type='radio' name='TaskType'  onChange={DecisionChange} value={isValue} text2='Decision-Making Task'/>
-            <InputExample classname='type' id='Sentence' type='radio' name='TaskType'  onChange={SentenceChange} value={isValue} text2='Sentence-Level Task'/>
-        </span> 
+      <NavBar/>
+        <div className='title'>
+        <h3>Select Task Type</h3>
         </div>
-      <DescriptionTask TitleChange={InputChange} DescriptionChange={InputChange} DateChange={InputChange}/>
-      {
-      isValue === 'Choice' && isValue !== 'Decision' && isValue !== 'Sentence'?
-      <ChoiceTask ChoiceTask={InputChange} OptionOne={InputChange} OptionTwo={InputChange} OptionThree={InputChange}/>
-      :
-      <div>
-      </div>
-      }
-      {
-      isValue === 'Decision' && isValue !== 'Choice' && isValue !== 'Sentence' ?
-      <DecisionTask DecisionTask={InputChange} YesDecision={InputChange} NoDecision={InputChange}/>
-      :
-      <div>
-      </div>
-      }
-      {
-      isValue === 'Sentence' && isValue !== 'Decision' && isValue !== 'Choice' ?
-      <SentenceTask SentenceTask={InputChange}/>
-      :
-      <div>
-      </div>
-      }
-      {
-        isValue !== 'Sentence' && isValue !== 'Decision' && isValue !== 'Choice'?
-        <SettingTask/>
+        <div className='Select'>
+        <span> 
+              <InputExample classname='type' id='Choice' type='radio' name='Type' onChange={ChoiceChange} value={isValue} text2='Choice Task'/>
+              <InputExample classname='type' id='Decision' type='radio' name='Type'  onChange={DecisionChange} value={isValue} text2='Decision-Making Task'/>
+              <InputExample classname='type' id='Sentence' type='radio' name='Type'  onChange={SentenceChange} value={isValue} text2='Sentence-Level Task'/>
+          </span> 
+          </div>
+        <DescriptionTask TitleChange={InputChange} DescriptionChange={InputChange} DateChange={InputChange}/>
+        {
+        isValue === 'Choice' && isValue !== 'Decision' && isValue !== 'Sentence' ?
+        <ChoiceTask ChoiceTask={InputChange} OptionOne={InputChange} OptionTwo={InputChange} OptionThree={InputChange}/>
         :
         <div>
         </div>
-      }
-      <WorkerRequirement Require={InputChange} Reward={InputChange} Numbers={InputChange}/>
-      <div className='button'>
-                <button type='submit' className="ui button" onClick={handleSubmit}>Save</button>
-      </div>
-    </div>   
+        }
+        {
+        isValue === 'Decision' && isValue !== 'Choice' && isValue !== 'Sentence'?
+        <DecisionTask DecisionTask={InputChange} YesDecision={InputChange} NoDecision={InputChange}/>
+        :
+        <div>
+        </div>
+        }
+        {
+        isValue === 'Sentence' && isValue !== 'Decision' && isValue !== 'Choice'  ?
+        <SentenceTask SentenceTask={InputChange}/>
+        :
+        <div>
+        </div>
+        }
+        {
+          isValue !== 'Sentence' && isValue !== 'Decision' && isValue !== 'Choice' ?
+          <SettingTask/>
+          :
+          <div>
+          </div>
+        }
+        <WorkerRequirement Require={InputChange} Reward={InputChange} Numbers={InputChange}/>
+        <div className='button'>
+        <Button variant="primary" onClick={handleSubmit} id='SubmitButton'>
+        Save
+      </Button>
+
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Congratulations</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>The data has been saved in database!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleClose}>
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
+        </div>
+        </div>
+        </div>
+      
   );
 }
 
